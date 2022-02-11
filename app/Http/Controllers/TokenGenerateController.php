@@ -11,10 +11,6 @@ class TokenGenerateController extends Controller
 {
     public function getToken(){
 
-            $connectionApi = new ConnectionApi();
-            $checkTokenExpiredTime = $connectionApi->where('expire_date','>=',Carbon::now())->first();
-
-            if(empty($checkTokenExpiredTime)){
                 $response = self::sendRequest();
 
                 $insertUpdate = [
@@ -28,12 +24,7 @@ class TokenGenerateController extends Controller
                 }else{
                     $connectonApi->insert($insertUpdate);
                 }
-                return response()->json(array('data' => "Token updated"),200);
-            }else{
-                return response()->json(array('data' => "Token is live"),200);
-            }
-
-
+                return $response['token'];
     }
 
     public function sendRequest(){
@@ -43,6 +34,16 @@ class TokenGenerateController extends Controller
             $data = json_decode($res->getBody()->getContents(),true);
         //}while(!empty($data));
         return $data['data'];
+    }
+
+    public function checkToken(){
+        $connectionApi = new ConnectionApi();
+        $checkTokenExpiredTime = $connectionApi->where('expire_date','>=',Carbon::now())->first();
+        if(empty($checkTokenExpiredTime)){
+            return $this->getToken();
+        }else{
+            return $checkTokenExpiredTime->token;
+        }
     }
 
 }

@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('auth-key', [\App\Http\Controllers\TokenGenerateController::class,'getToken']);
-//Route::get('top-tournament', [\App\Http\Controllers\::class,'getToken']);
+Route::get('tournament', [\App\Http\Controllers\TournamentController::class,'getTournament']);
+Route::get('stats', [\App\Http\Controllers\StatsController::class,'getStats']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
