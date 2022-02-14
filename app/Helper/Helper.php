@@ -2,7 +2,7 @@
 
 use GuzzleHttp\Client;
 
-function sendRequest($token,$endPoint, $string = null){
+function sendRequest($token,$endPoint, $string = null,$nextPage=null){
     try{
         $client = new Client();
         $res = $client->request('get', env('CRICKET_BASE_URL') . $endPoint,

@@ -8,6 +8,9 @@ use App\Http\Controllers\TokenGenerateController;
 
 class TournamentController extends Controller
 {
+    private $url = 'featured-tournaments/';
+    private $key = 'tournaments';
+
     public function getTournament()
     {
         $tokenObj = new TokenGenerateController();
@@ -16,8 +19,8 @@ class TournamentController extends Controller
         return response()->success($result, "Tournament get succssfully");
     }
 
-    public static function getTournamentResponse($token){
-        $apiResult =sendRequest($token,"featured-tournaments/",'tournaments');
+    public function getTournamentResponse($token){
+        $apiResult =sendRequest($token,$this->url,$this->key);
         $result = [];
         foreach ($apiResult as $row) {
             $result[] = [
