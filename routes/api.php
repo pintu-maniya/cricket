@@ -29,6 +29,7 @@ Route::get('country-list', [\App\Http\Controllers\Api\CountryController::class,'
 Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']);
 Route::post('ball-by-ball', [\App\Http\Controllers\Api\BallByBollController::class,'getBollByBall']);
 Route::post('scorecard', [\App\Http\Controllers\Api\ScoreController::class,'getScoreboard']);
+Route::get('ongoing-matches', [\App\Http\Controllers\Api\MatchesController::class,'ongoingMatches']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
