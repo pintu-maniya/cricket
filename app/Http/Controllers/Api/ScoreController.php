@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ScoreController extends Controller
@@ -25,14 +26,33 @@ class ScoreController extends Controller
                     $key = $team_key;
                 }
             }
+
             $result['run'] = $apiResult['teams'][$key]['code'].' '.$apiResult['play']['innings'][$key.'_1']['score_str'];
             $result['toss_status'] = $apiResult['teams'][$apiResult['toss']['winner']]['code'] . ' Won toss & '.$apiResult['toss']['elected'];
-            foreach ($apiResult['squad'][$key]['player_keys'] as $player_key => $row) {
-                $result[$row] =  $apiResult['players'][$row]['score']['1']['batting'];
-            }
+            $result['player_count'] = count($apiResult['squad'][$key]['playing_xi']);
+
+            $result['batting'] =  $this->getBattingData($apiResult, $key);
+            $result['bawling'] =  $this->getBowlingData($apiResult, $key);
+
         }catch (\Exception $e){
             dd($e->getMessage());
             report($e);
+        }
+        return $result;
+    }
+
+    public function getBattingData($matchData, $teamKey){
+        $result = [];
+        foreach ($matchData['squad'][$teamKey]['playing_xi'] as $player_key => $row) {
+            $result[$row] =  $matchData['players'][$row]['score']['1']['batting'];
+        }
+        return $result;
+    }
+
+    public function getBowlingData($matchData, $teamKey){
+        $result = [];
+        foreach ($matchData['squad'][$teamKey]['playing_xi'] as $player_key => $row) {
+            $result[$row] =  $matchData['players'][$row]['score']['1']['bowling'];
         }
         return $result;
     }

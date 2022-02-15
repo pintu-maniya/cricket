@@ -14,16 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('auth-key', [\App\Http\Controllers\TokenGenerateController::class,'getToken']);
-Route::get('tournament', [\App\Http\Controllers\TournamentController::class,'getTournament']);
-Route::get('stats', [\App\Http\Controllers\StatsController::class,'getStats']);
-Route::get('players', [\App\Http\Controllers\PlayersController::class,'getPlayer']);
-Route::get('teams', [\App\Http\Controllers\TeamController::class,'getTeams']);
-Route::get('associations-list', [\App\Http\Controllers\AssociationController::class,'getAssociationList']);
-Route::get('country-list', [\App\Http\Controllers\CountryController::class,'getCountryList']);
-Route::get('matches', [\App\Http\Controllers\MatchesController::class,'getMatches']);
-Route::post('ball-by-ball', [\App\Http\Controllers\BallByBollController::class,'getBollByBall']);
-Route::post('scorecard', [\App\Http\Controllers\ScoreController::class,'getScoreboard']);
+/*Route::post('/tokens/create', function (Request $request) {
+    $token = $request->loginKey->createToken($request->token_name);
+    return ['token' => $token->plainTextToken];
+});*/
+
+Route::post('auth-key', [\App\Http\Controllers\Api\TokenGenerateController::class,'getToken']);
+Route::get('tournament', [\App\Http\Controllers\Api\TournamentController::class,'getTournament']);
+Route::get('stats', [\App\Http\Controllers\Api\StatsController::class,'getStats']);
+Route::get('players', [\App\Http\Controllers\Api\PlayersController::class,'getPlayer']);
+Route::get('teams', [\App\Http\Controllers\Api\TeamController::class,'getTeams']);
+Route::get('associations-list', [\App\Http\Controllers\Api\AssociationController::class,'getAssociationList']);
+Route::get('country-list', [\App\Http\Controllers\Api\CountryController::class,'getCountryList']);
+Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']);
+Route::post('ball-by-ball', [\App\Http\Controllers\Api\BallByBollController::class,'getBollByBall']);
+Route::post('scorecard', [\App\Http\Controllers\Api\ScoreController::class,'getScoreboard']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
