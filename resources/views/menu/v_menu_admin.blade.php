@@ -67,7 +67,7 @@
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="menu-submenu">
-        
+
                         <ul class="menu-subnav">
                             <li class="menu-item menu-item-parent" aria-haspopup="true">
                                 <span class="menu-link">
@@ -83,24 +83,108 @@
                                     <span class="menu-label">
                                         <span class="label label-rounded label-primary"><?= $count_user ?></span>
                                     </span>
-                                    
+
                                 </a>
-                                
+
                             </li>
-                    
+
                         </ul>
                     </div>
                 </li>
-            
+
                 <li class="menu-item" aria-haspopup="true">
                     <a href="#" class="menu-link">
                         <span class="menu-icon fas fa-cog">
-                           
+
                         </span>
                         <span class="menu-text">App Settings</span>
                     </a>
-                </li>	
-            
+                </li>
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">League</span>
+                    </a>
+                </li>
+
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">Teams</span>
+                    </a>
+                </li>
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">Matches</span>
+                    </a>
+                </li>
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">Live Stream</span>
+                    </a>
+                </li>
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">Live Score Board</span>
+                    </a>
+                </li>
+
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">News</span>
+                    </a>
+                </li>
+
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">Functionality Hide/Show</span>
+                    </a>
+                </li>
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">Geo-Blocking</span>
+                    </a>
+                </li>
+
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">User Information</span>
+                    </a>
+                </li>
+                <li class="menu-item" aria-haspopup="true">
+                    <a href="#" class="menu-link">
+                        <span class="menu-icon fas fa-cog">
+
+                        </span>
+                        <span class="menu-text">Ads</span>
+                    </a>
+                </li>
+
             </ul>
             <!--end::Menu Nav-->
         </div>
