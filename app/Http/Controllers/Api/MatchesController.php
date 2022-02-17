@@ -74,4 +74,38 @@ class MatchesController extends Controller
         }
         return $result;
     }
+
+    public function ongoingMatches(){
+
+        $tokenObj = new TokenGenerateController();
+        $token = $tokenObj->checkToken();
+        $turnamentObj = new TournamentController();
+        $allTournaments = $turnamentObj->getTournamentResponse($token);
+        $todayDate = date('Y-m-d');
+        $currentTournament = collect($allTournaments)->filter(function ($row) use ($todayDate){
+            if(Carbon::parse($row['start_date'])->format('Y-m-d') <= $todayDate && Carbon::parse($row['last_scheduled_match_date'])->format('Y-m-d') > $todayDate){
+                return $row;
+            }
+        });
+        $result = [];
+        foreach ($currentTournament as $tournament) {
+            $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
+            $result[] = $apiResult;
+        }
+
+//        try{
+//            foreach ($apiResult['matches'] as $row) {
+//
+//            }
+//        }catch (\Exception $e) {
+//            report($e);
+//        }
+
+
+        return response()->success($result, "Matches get succssfully");
+
+
+
+        dd($result);
+    }
 }

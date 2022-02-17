@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Http\Controllers\TokenGenerateController;
 
 class TournamentController extends Controller
 {
@@ -16,7 +16,7 @@ class TournamentController extends Controller
     {
         $tokenObj = new TokenGenerateController();
         $token = $tokenObj->checkToken();
-        $result = getTournamentResponse($token);
+        $result = $this->getTournamentResponse($token);
         return response()->success($result, "Tournament get succssfully");
     }
 
