@@ -82,16 +82,13 @@ class MatchesController extends Controller
         $turnamentObj = new TournamentController();
         $allTournaments = $turnamentObj->getTournamentResponse($token);
         $todayDate = date('Y-m-d');
-        $result = collect($allTournaments)->filter(function ($row) use ($todayDate){
-            dump(Carbon::parse($row['start_date'])->format('Y-m-d') ."<=". $todayDate);
+        $currentTournament = collect($allTournaments)->filter(function ($row) use ($todayDate){
             if(Carbon::parse($row['start_date'])->format('Y-m-d') <= $todayDate && Carbon::parse($row['last_scheduled_match_date'])->format('Y-m-d') > $todayDate){
                 return $row;
             }
         });
-        dd(count($result));
         $result = [];
-        foreach ($allTournaments as $tournament) {
-
+        foreach ($currentTournament as $tournament) {
             $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
             $result[] = $apiResult;
         }
