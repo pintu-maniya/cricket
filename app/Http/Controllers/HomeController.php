@@ -24,6 +24,7 @@ class HomeController extends Controller
     public function index()
     {
         $isi['count_user'] = DB::table('users')->count();
+        $isi['count_ads'] = DB::table('ads')->count();
         $isi['menu'] = 'menu.v_menu_admin';
         $isi['content'] = 'content.view_dashboard';
         return view('layouts.v_template',$isi);

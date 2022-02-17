@@ -13,11 +13,11 @@ class TokenGenerateController extends Controller
     public function getToken(){
 
                 $response = self::sendRequest();
-
                 $insertUpdate = [
                     'token'         => $response['token'],
                     'expire_date'   => Carbon::parse($response['expires'])
                 ];
+
                 $connectonApi = new ConnectionApi();
                 $result = $connectonApi->first();
                 if($result){

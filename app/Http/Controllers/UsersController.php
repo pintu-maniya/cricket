@@ -14,7 +14,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-    } 
+    }
 
     public function index(Request $request)
     {
@@ -30,10 +30,10 @@ class UsersController extends Controller
             return Datatables::of($q_user)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
-     
+
                         $btn = '<div data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Edit" class="btn btn-sm btn-icon btn-outline-success btn-circle mr-2 edit editUser"><i class=" fi-rr-edit"></i></div>';
                         $btn = $btn.' <div data-toggle="tooltip"  data-id="'.$row->id.'" data-original-title="Delete" class="btn btn-sm btn-icon btn-outline-danger btn-circle mr-2 deleteUser"><i class="fi-rr-trash"></i></div>';
- 
+
                          return $btn;
                     })
                     ->rawColumns(['action'])
@@ -56,7 +56,7 @@ class UsersController extends Controller
                  'email' => $request->email,
                  'level' => $request->level,
                  'password' => Hash::make($request->password),
-                ]);        
+                ]);
 
         return response()->json(['success'=>'User saved successfully!']);
     }

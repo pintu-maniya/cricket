@@ -2,10 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\UsersController;
-
-
+use App\Http\Controllers\AdsController;
+use App\Http\Controllers\GeoBlockingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,13 +19,15 @@ use App\Http\Controllers\UsersController;
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
 Route::get('/', function () {
-    return redirect()->action([HomeController::class, 'index']);
+    return redirect()->action([UsersController::class, 'index']);
 });
 
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/user', [UserController::class, 'index'])->name('user.index');
+Route::resource('geo-blocking', GeoBlockingController::class);
+Route::resource('ads', AdsController::class);
 
 // Route::get('/user.get_data',[UserController::class, 'get_data'])->name('get_data');
 Route::resource('users', UsersController::class);
