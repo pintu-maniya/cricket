@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\TokenGenerateController;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\TokenGenerateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -14,8 +14,8 @@ class StatsController extends Controller
     public function getStats()
     {
         $tokenObj = new TokenGenerateController();
-        $TournamentController = new TournamentController();
         $token = $tokenObj->checkToken();
+        $TournamentController = new TournamentController();
         $result = $this->preparedStateData($token);
         $tournamentList = $TournamentController->getTournamentResponse($token);
         if(!empty($tournamentList)){
@@ -76,5 +76,17 @@ class StatsController extends Controller
         }
 
         return $result;
+    }
+
+    public function getStatsByMatch(Request $request){
+        $tokenObj = new TokenGenerateController();
+        $token = $tokenObj->checkToken();
+        $result = [];
+        if(isset($request->match_key)) {
+            $matchObj = new MatchesController();
+            $apiResult = $matchObj->getMatchById($token, $request);
+            $result = $apiResult['play'];
+        }
+        return response()->success($apiResult, "Stats get succssfully");
     }
 }
