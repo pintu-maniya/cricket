@@ -26,6 +26,7 @@ Route::get('players', [\App\Http\Controllers\Api\PlayersController::class,'getPl
 Route::get('teams', [\App\Http\Controllers\Api\TeamController::class,'getTeams']);
 Route::get('associations-list', [\App\Http\Controllers\Api\AssociationController::class,'getAssociationList']);
 Route::get('country-list', [\App\Http\Controllers\Api\CountryController::class,'getCountryList']);
+Route::get('country', [\App\Http\Controllers\Api\CountryController::class,'country']);
 Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']);
 Route::post('ball-by-ball', [\App\Http\Controllers\Api\BallByBollController::class,'getBollByBall']);
 Route::post('scorecard', [\App\Http\Controllers\Api\ScoreController::class,'getScoreboard']);

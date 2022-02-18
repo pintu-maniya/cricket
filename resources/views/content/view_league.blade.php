@@ -3,10 +3,10 @@
         <div class="card">
             <div class="card-header">
                 <h2>{{$title}}</h2>
-                <div class="d-flex flex-row-reverse"><button
+                {{--<div class="d-flex flex-row-reverse"><button
                         class="btn btn-sm btn-pill btn-outline-primary font-weight-bolder" id="createNewUser"><i
                             class="fas fa-plus"></i>add data </button></div>
-            </div>
+            </div>--}}
             <div class="card-body">
                 <div class="col-md-12">
                     <div class="table-responsive">
@@ -15,8 +15,9 @@
                                 <tr>
                                     {{-- <th>No.</th> --}}
                                     <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Level</th>
+                                    <th>start date</th>
+                                    <th>position</th>
+                                    <th>status</th>
                                     <th style="width:90px;">Action</th>
                                 </tr>
                             </thead>
@@ -48,7 +49,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h5 class="modal-title text-white" id="exampleModalLabel">Modal User</h5>
+                <h5 class="modal-title text-white" id="exampleModalLabel">Modal League</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i aria-hidden="true" class="ki ki-close"></i>
                 </button>
@@ -56,16 +57,21 @@
             <div class="modal-body">
                 <form id="formUser" name="formUser">
                     <div class="form-group">
-
-                        <input type="text" name="name" class="form-control" id="name" placeholder="Nama"><br>
-                        <input type="email" name="email" class="form-control" id="email" placeholder="email"><br>
-                        <select name="level" class="form-control" id="level">
-                            <option value="-">Pilih Level</option>
-                            <option value="1">Operator</option>
-                            <option value="2">Member</option>
+                        <label>Name</label><br>
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Name" readonly><br>
+                        <label>Status</label><br>
+                        <select name="status" class="form-control" id="status">
+                            <option value="1">On</option>
+                            <option value="0">Off</option>
                         </select><br>
-                        <input type="text" name="password" class="form-control" placeholder="password"><br>
-                        <input type="hidden" name="user_id" id="user_id" value="">
+                        <label>Position</label><br>
+                        <select name="position" class="form-control" id="position">
+                            <option value="0">0</option>
+                            @foreach($tournament as  $key => $row)
+                                <option value="{{$key+1}}">{{$key+1}}</option>
+                                @endforeach
+                        </select><br>
+                        <input type="hidden" name="id" id="id" value="">
                     </div>
                 </form>
             </div>
@@ -110,18 +116,20 @@
             buttons: [
                 'copy', 'excel', 'pdf'
             ],
-            ajax: "{{ route('users.index') }}",
+            ajax: "{{ route('league.index') }}",
             columns: [{
-                    data: 'name',
-                    name: 'name'
+                    data: 'title',
+                    name: 'title'
                 },
                 {
-                    data: 'email',
-                    name: 'email'
-                },
-                {
-                    data: 'level',
-                    name: 'level'
+                    data: 'start_date',
+                    name: 'start_date'
+                },{
+                    data: 'position',
+                    name: 'position'
+                },{
+                    data: 'status',
+                    name: 'status'
                 },
                 {
                     data: 'action',
@@ -131,7 +139,7 @@
                 },
             ]
         });
-        
+
         // csrf token
         $.ajaxSetup({
             headers: {
@@ -141,20 +149,20 @@
         // initialize btn add
         $('#createNewUser').click(function () {
             $('#saveBtn').val("create user");
-            $('#user_id').val('');
+            $('#id').val('');
             $('#formUser').trigger("reset");
             $('#modal-user').modal('show');
         });
         // initialize btn edit
         $('body').on('click', '.editUser', function () {
-            var user_id = $(this).data('id');
-            $.get("{{route('users.index')}}" + '/' + user_id + '/edit', function (data) {
+            var id = $(this).data('id');
+            $.get("{{route('league.index')}}" + '/' + id + '/edit', function (data) {
                 $('#saveBtn').val("edit-user");
                 $('#modal-user').modal('show');
-                $('#user_id').val(data.id);
-                $('#name').val(data.name);
-                $('#email').val(data.email);
-                $('#level').val(data.level);
+                $('#id').val(data.id);
+                $('#name').val(data.title);
+                $('#status').val(data.status);
+                $('#position').val(data.position);
             })
         });
         // initialize btn save
@@ -164,7 +172,7 @@
 
             $.ajax({
                 data: $('#formUser').serialize(),
-                url: "{{ route('users.store') }}",
+                url: "{{ route('league.store') }}",
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {
@@ -184,7 +192,7 @@
         });
         // initialize btn delete
         $('body').on('click', '.deleteUser', function () {
-            var user_id = $(this).data("id");
+            var id = $(this).data("id");
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -198,7 +206,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "DELETE",
-                        url: "{{route('users.store')}}" + '/' + user_id,
+                        url: "{{route('league.store')}}" + '/' + id,
                         success: function (data) {
                             swal_success();
                             table.draw();

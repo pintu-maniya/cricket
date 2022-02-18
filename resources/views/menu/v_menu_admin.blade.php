@@ -125,20 +125,20 @@
                     </a>
                 </li>
                 <li class="menu-item" aria-haspopup="true">
-                    <a href="#" class="menu-link">
+                    <a href="/league" class="menu-link">
 {{--                        <span class="menu-icon fas fa-cog"></span>--}}
                         <span class="menu-text">League</span>
                     </a>
                 </li>
 
                 <li class="menu-item" aria-haspopup="true">
-                    <a href="#" class="menu-link">
+                    <a href="/team" class="menu-link">
 {{--                        <span class="menu-icon fas fa-cog"></span>--}}
                         <span class="menu-text">Teams</span>
                     </a>
                 </li>
                 <li class="menu-item" aria-haspopup="true">
-                    <a href="#" class="menu-link">
+                    <a href="/match" class="menu-link">
 {{--                        <span class="menu-icon fas fa-cog"></span>--}}
                         <span class="menu-text">Matches</span>
                     </a>

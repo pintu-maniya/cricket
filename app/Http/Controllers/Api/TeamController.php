@@ -12,7 +12,7 @@ class TeamController extends Controller
         $tokenObj = new TokenGenerateController();
         $token = $tokenObj->checkToken();
         $tournamentList = TournamentController::getTournamentResponse($token);
-        $apiResult = sendRequest($token, 'team//');
+        $apiResult = sendRequest($token, 'team/');
         $result = [];
         if ($tournamentList) {
             foreach ($tournamentList as $tournament) {

@@ -5,21 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Api\TokenGenerateController;
 use App\Http\Controllers\Api\TournamentController;
 use App\Models\Country;
-use App\Models\Tournament;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 
-class LeagueController extends Controller
+class TeamController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-
-        $tournament =  $this->insertTournament();
+        $country = Country::get()->toArray();
+        $this->getAssociation($country);
         $data = [
             'count_user' => Tournament::latest()->count(),
             'menu'       => 'menu.v_menu_admin',
@@ -54,16 +52,16 @@ class LeagueController extends Controller
         return view('layouts.v_template',$data);
     }
 
-    public function insertTournament(){
+    public function getAssociation($country){
         $tokenObj = new TokenGenerateController();
         $token = $tokenObj->checkToken();
-        $tournament = new TournamentController();
-        $tournaments = $tournament->getTournamentResponse($token);
-        foreach ($tournaments as $tournament){
-            Tournament::updateOrInsert($tournament,['key'=> $tournament['key']]);
+        $featured_tournaments = sendRequest($token, "featured-tournaments/");
+        $result = [];
+        foreach($featured_tournaments['tournaments'] as $featured_tournament){
+            $result[] = sendRequest($token, "grouped-tournament/".$featured_tournament['key']."/");
         }
-
-        return Tournament::all()->toArray();
+        $points = array_values($result);
+        dd($points);
 
     }
 
@@ -85,13 +83,7 @@ class LeagueController extends Controller
      */
     public function store(Request $request)
     {
-        Tournament::updateOrCreate(['id' => $request->id],
-            [
-                'position' => $request->position,
-                'status' => $request->status,
-            ]);
-
-        return response()->json(['success'=>'League saved successfully!']);
+        //
     }
 
     /**
@@ -102,7 +94,7 @@ class LeagueController extends Controller
      */
     public function show($id)
     {
-
+        //
     }
 
     /**
@@ -113,8 +105,7 @@ class LeagueController extends Controller
      */
     public function edit($id)
     {
-        $Tournament = Tournament::find($id);
-        return response()->json($Tournament);
+        //
     }
 
     /**

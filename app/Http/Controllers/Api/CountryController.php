@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use Illuminate\Http\Request;
 
 class CountryController extends Controller
@@ -31,5 +32,10 @@ class CountryController extends Controller
             return $result;
         }
         return;
+    }
+
+    public function country(){
+        $response = Country::all();
+        return response()->json($response);
     }
 }
