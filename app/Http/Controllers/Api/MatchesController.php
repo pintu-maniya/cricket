@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use function GuzzleHttp\Promise\all;
 
 class MatchesController extends Controller
 {
@@ -76,9 +77,25 @@ class MatchesController extends Controller
     }
 
     public function ongoingMatches(){
-
         $tokenObj = new TokenGenerateController();
         $token = $tokenObj->checkToken();
+        $allMatches = $this->prepareMatchesData($token);
+        $result = [];
+        foreach ($allMatches as $matches){
+            foreach ($matches as $match){
+                $result[] = [
+                    'key' => $match['key'],
+                    'format' => $match['format'],
+                    'teams' => $match['teams'],
+                    'start_at' => $match['start_at'],
+                    'venue' => $match['venue'],
+                ];
+            }
+        }
+        return response()->success($result, "Ongoing matches get succssfully");
+    }
+
+    public function prepareOngoingData($token) {
         $turnamentObj = new TournamentController();
         $allTournaments = $turnamentObj->getTournamentResponse($token);
         $todayDate = date('Y-m-d');
@@ -87,25 +104,103 @@ class MatchesController extends Controller
                 return $row;
             }
         });
-        $result = [];
+        $allMatches = [];
         foreach ($currentTournament as $tournament) {
             $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
-            $result[] = $apiResult;
+            $allMatches[] = collect($apiResult['matches'])->filter(function ($row) use ($todayDate){
+                if(Carbon::parse($row['start_at'])->format('Y-m-d') == $todayDate){
+                    return $row;
+                }
+            });
         }
+        return $allMatches;
+    }
 
-//        try{
-//            foreach ($apiResult['matches'] as $row) {
-//
-//            }
-//        }catch (\Exception $e) {
-//            report($e);
-//        }
+    public function upcomingMatches(){
+        $tokenObj = new TokenGenerateController();
+        $token = $tokenObj->checkToken();
+        $allMatches = $this->prepareUpcomingData($token);
+        $result = [];
+        foreach ($allMatches as $matches){
+            foreach ($matches as $match){
+                $result[] = [
+                    'key' => $match['key'],
+                    'format' => $match['format'],
+                    'teams' => $match['teams'],
+                    'start_at' => $match['start_at'],
+                    'venue' => $match['venue'],
+                ];
+            }
+        }
+        return response()->success($result, "Upcoming matches get succssfully");
+    }
 
+    public function prepareUpcomingData($token){
+        $turnamentObj = new TournamentController();
+        $allTournaments = $turnamentObj->getTournamentResponse($token);
+        $todayDate = date('Y-m-d');
+        $currentTournament = collect($allTournaments)->filter(function ($row) use ($todayDate){
+            if(Carbon::parse($row['start_date'])->format('Y-m-d') <= $todayDate && Carbon::parse($row['last_scheduled_match_date'])->format('Y-m-d') > $todayDate){
+                return $row;
+            }
+        });
+        $allMatches = [];
+        foreach ($currentTournament as $tournament) {
+            $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
+            $allMatches[] = collect($apiResult['matches'])->filter(function ($row) use ($todayDate){
+                if(Carbon::parse($row['start_at'])->format('Y-m-d') > $todayDate && $row['status'] == 'not_started'){
+                    return $row;
+                }
+            });
+        }
+        return $allMatches;
+    }
 
-        return response()->success($result, "Matches get succssfully");
+    public function getCompletedMatches(){
+        $tokenObj = new TokenGenerateController();
+        $token = $tokenObj->checkToken();
+        $allMatches = $this->prepareCompletedMatchesData($token);
+        $result = [];
+        foreach ($allMatches as $matches){
+            foreach ($matches as $match){
+                $result[] = [
+                    'key' => $match['key'],
+                    'format' => $match['format'],
+                    'teams' => $match['teams'],
+                    'start_at' => $match['start_at'],
+                    'venue' => $match['venue'],
+                ];
+            }
+        }
+        return response()->success($result, "Completed matches get succssfully");
+    }
 
+    public function prepareCompletedMatchesData($token){
+        $turnamentObj = new TournamentController();
+        $allTournaments = $turnamentObj->getTournamentResponse($token);
+        $todayDate = date('Y-m-d');
+        $currentTournament = collect($allTournaments)->filter(function ($row) use ($todayDate){
+            if(Carbon::parse($row['start_date'])->format('Y-m-d') <= $todayDate && Carbon::parse($row['last_scheduled_match_date'])->format('Y-m-d') > $todayDate){
+                return $row;
+            }
+        });
+        $allMatches = [];
+        foreach ($currentTournament as $tournament) {
+            $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
+            $allMatches[] = collect($apiResult['matches'])->filter(function ($row) use ($todayDate){
+                if($row['status'] == 'completed'){
+                    return $row;
+                }
+            });
+        }
+        return $allMatches;
+    }
 
-
-        dd($result);
+    public function getMatchById($token, $request){
+        $result = [];
+        if(isset($request->match_key)) {
+            $result = sendRequest($token, 'match/' . $request->match_key . '/');
+        }
+        return $result;
     }
 }

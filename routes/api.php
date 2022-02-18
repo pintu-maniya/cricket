@@ -30,6 +30,9 @@ Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMa
 Route::post('ball-by-ball', [\App\Http\Controllers\Api\BallByBollController::class,'getBollByBall']);
 Route::post('scorecard', [\App\Http\Controllers\Api\ScoreController::class,'getScoreboard']);
 Route::get('ongoing-matches', [\App\Http\Controllers\Api\MatchesController::class,'ongoingMatches']);
+Route::get('upcoming-matches', [\App\Http\Controllers\Api\MatchesController::class,'upcomingMatches']);
+Route::post('get-stats-by-match', [\App\Http\Controllers\Api\StatsController::class,'getStatsByMatch']);
+Route::get('completed-matches', [\App\Http\Controllers\Api\MatchesController::class,'getCompletedMatches']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
