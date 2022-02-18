@@ -67,7 +67,6 @@ class MatchesController extends Controller
                     'piek'=> $piek,
                     'play' => $row['play'],
                     'teams' => $row['teams'],
-                    'players' => $row['players'],
                 ];
             }
         }catch (\Exception $e){
@@ -76,10 +75,64 @@ class MatchesController extends Controller
         return $result;
     }
 
+    public function getTodayMatches(){
+        $tokenObj = new TokenGenerateController();
+        $token = $tokenObj->checkToken();
+        $allMatches = $this->prepareTodayMatchesData($token);
+        $result = [];
+        foreach ($allMatches as $matches) {
+            foreach ($matches as $match){
+                $piek = [];
+                if($match['players']){
+                    foreach ($match['players'] as $playercode => $player){
+                        $piek[$player['player']['name']] = [
+                            'player_name' => $player['player']['name'],
+                            'country' => $player['player']['nationality']['name'],
+                            'score'  => !empty($player['score'][1]) ? !empty($player['score'][1]['batting']) ? $player['score'][1]['batting']['score'] : null : null,
+                            'highest_score'  => !empty($player['score'][1]) ? !empty($player['score'][1]['batting']) ? $player['score'][1]['batting']['score']['runs'] : null : null,
+                        ];
+                    }
+                }
+                $piek = collect($piek)->sortBy('highest_score')->reverse()->toArray();
+                $result[] = [
+                    'key' => $match['key'],
+                    'format' => $match['format'],
+                    'teams' => $match['teams'],
+                    'start_at' => $match['start_at'],
+                    'venue' => $match['venue'],
+                    'day_number' => $match['play']['day_number'],
+                    'piek' => $piek
+                ];
+            }
+        }
+        return response()->success($result, "Today matches get succssfully");
+    }
+
+    public function prepareTodayMatchesData($token){
+        $turnamentObj = new TournamentController();
+        $allTournaments = $turnamentObj->getTournamentResponse($token);
+        $todayDate = date('Y-m-d');
+        $currentTournament = collect($allTournaments)->filter(function ($row) use ($todayDate){
+            if(Carbon::parse($row['start_date'])->format('Y-m-d') <= $todayDate && Carbon::parse($row['last_scheduled_match_date'])->format('Y-m-d') > $todayDate){
+                return $row;
+            }
+        });
+        $allMatches = [];
+        foreach ($currentTournament as $tournament) {
+            $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
+            $allMatches[] = collect($apiResult['matches'])->filter(function ($row) use ($todayDate){
+                if($row['status'] == 'started'){
+                    return $row;
+                }
+            });
+        }
+        return $allMatches;
+    }
+
     public function ongoingMatches(){
         $tokenObj = new TokenGenerateController();
         $token = $tokenObj->checkToken();
-        $allMatches = $this->prepareMatchesData($token);
+        $allMatches = $this->prepareOngoingData($token);
         $result = [];
         foreach ($allMatches as $matches){
             foreach ($matches as $match){
@@ -108,7 +161,7 @@ class MatchesController extends Controller
         foreach ($currentTournament as $tournament) {
             $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
             $allMatches[] = collect($apiResult['matches'])->filter(function ($row) use ($todayDate){
-                if(Carbon::parse($row['start_at'])->format('Y-m-d') == $todayDate){
+                if(Carbon::parse($row['start_at'])->format('Y-m-d') == $todayDate && $row['status'] != 'started'){
                     return $row;
                 }
             });
@@ -172,7 +225,7 @@ class MatchesController extends Controller
                 ];
             }
         }
-        return response()->success($result, "Completed matches get succssfully");
+        return response()->success($allMatches, "Completed matches get succssfully");
     }
 
     public function prepareCompletedMatchesData($token){
@@ -200,6 +253,14 @@ class MatchesController extends Controller
         $result = [];
         if(isset($request->match_key)) {
             $result = sendRequest($token, 'match/' . $request->match_key . '/');
+        }
+        return $result;
+    }
+
+    public function prepareStatsMatchDataByTournamentId($token, $request){
+        $result = [];
+        if(isset($request->tournament_key)) {
+            $result = sendRequest($token, 'tournament/' . $request->match_key . '/stats/');
         }
         return $result;
     }

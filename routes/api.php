@@ -19,19 +19,30 @@ use Illuminate\Support\Facades\Route;
     return ['token' => $token->plainTextToken];
 });*/
 
+Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']);
+// Home
+Route::get('today-matches', [\App\Http\Controllers\Api\MatchesController::class,'getTodayMatches']); // Today's Matches
+Route::get('upcoming-matches', [\App\Http\Controllers\Api\MatchesController::class,'upcomingMatches']); // Upcoming Matches
+Route::get('stats', [\App\Http\Controllers\Api\StatsController::class,'getStats']); // All Stats
+
+// x - 72
+Route::post('scorecard', [\App\Http\Controllers\Api\ScoreController::class,'getScoreboard']); // Scorecard - para {match_key, team_key}
+
+// X - 119
+Route::get('ongoing-matches', [\App\Http\Controllers\Api\MatchesController::class,'ongoingMatches']); // Ongoing Matches
+
+
+
 Route::post('auth-key', [\App\Http\Controllers\Api\TokenGenerateController::class,'getToken']);
 Route::get('tournament', [\App\Http\Controllers\Api\TournamentController::class,'getTournament']);
-Route::get('stats', [\App\Http\Controllers\Api\StatsController::class,'getStats']);
+
 Route::get('players', [\App\Http\Controllers\Api\PlayersController::class,'getPlayer']);
 Route::get('teams', [\App\Http\Controllers\Api\TeamController::class,'getTeams']);
 Route::get('associations-list', [\App\Http\Controllers\Api\AssociationController::class,'getAssociationList']);
-Route::get('country-list', [\App\Http\Controllers\Api\CountryController::class,'getCountryList']);
-Route::get('country', [\App\Http\Controllers\Api\CountryController::class,'country']);
-Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']);
+Route::get('country-list', [\App\Http\Controllers\Api\CountryController::class,'getCountryList']); // added by pintu, get country form api
+Route::get('country', [\App\Http\Controllers\Api\CountryController::class,'country']);// added by pintu, get country from db
+Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']); //
 Route::post('ball-by-ball', [\App\Http\Controllers\Api\BallByBollController::class,'getBollByBall']);
-Route::post('scorecard', [\App\Http\Controllers\Api\ScoreController::class,'getScoreboard']);
-Route::get('ongoing-matches', [\App\Http\Controllers\Api\MatchesController::class,'ongoingMatches']);
-Route::get('upcoming-matches', [\App\Http\Controllers\Api\MatchesController::class,'upcomingMatches']);
 Route::post('get-stats-by-match', [\App\Http\Controllers\Api\StatsController::class,'getStatsByMatch']);
 Route::get('completed-matches', [\App\Http\Controllers\Api\MatchesController::class,'getCompletedMatches']);
 Route::middleware('auth:api')->get('/user', function (Request $request) {
