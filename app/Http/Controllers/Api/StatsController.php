@@ -22,7 +22,6 @@ class StatsController extends Controller
             $apiResult = sendRequest($token, $this->url);
             return response()->success($apiResult, "Stats get succssfully");
         }
-
         return response()->error('Sorry, no tournament found');
     }
 
@@ -89,4 +88,14 @@ class StatsController extends Controller
         }
         return response()->success($apiResult, "Stats get succssfully");
     }
+
+    public function getstatsMatchById(){
+        $tokenObj = new TokenGenerateController();
+        $token = $tokenObj->checkToken();
+        $matchObj = new MatchesController();
+        $apiResult = $matchObj->prepareStatsMatchDataByTournamentId($token);
+    }
+
+
+
 }
