@@ -16,17 +16,17 @@ class CreateMatchesTable extends Migration
         Schema::create('matches', function (Blueprint $table) {
             $table->id();
             $table->string('key');
-            $table->string('name');
-            $table->string('sub_title');
-            $table->string('venue');
-            $table->string('tournament_key');
-            $table->string('format');
-            $table->string('status');
-            $table->string('team_a');
-            $table->string('team_b');
-            $table->dateTime('start_at');
-            $table->dateTime('start_at_local');
-            $table->string('message');
+            $table->string('name')->nullable();
+            $table->string('sub_title')->nullable();
+            $table->string('venue')->nullable();
+            $table->string('tournament_key')->nullable();
+            $table->string('format')->nullable();
+            $table->string('status')->nullable();
+            $table->string('team_a')->nullable();
+            $table->string('team_b')->nullable();
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('start_at_local')->nullable();
+            $table->string('message')->nullable();
             $table->timestamps();
         });
     }

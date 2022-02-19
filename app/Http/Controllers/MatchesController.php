@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Api\CountryController;
 use App\Http\Controllers\Api\TokenGenerateController;
-use App\Models\Country;
 use App\Models\Matches;
-use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -25,13 +22,14 @@ class MatchesController extends Controller
             'count_user' => Matches::latest()->count(),
             'menu'       => 'menu.v_menu_admin',
             'content'    => 'content.view_matches',
-            'title'    => 'Table Matache',
-            'tournament'    => $matches,
+            'title'    => 'Table Matches',
+            'matches'    => $matches,
         ];
 
+
         if ($request->ajax()) {
-            $q_tournament = Tournament::select('*')->orderByDesc('created_at');
-            return DataTables::of($q_tournament)
+            $q_matches = Matches::select('*')->orderByDesc('created_at');
+            return DataTables::of($q_matches)
                 ->addIndexColumn()
                 ->addColumn('status', function($row){
                     $html = "<span class=''>On</span>";
@@ -57,9 +55,23 @@ class MatchesController extends Controller
         $token = $tokenObj->checkToken();
         $matches = new \App\Http\Controllers\Api\MatchesController();
         $matches = $matches->prepareMatchesData($token);
-        dd($matches);
         foreach ($matches as $matche){
-            Matches::updateOrInsert($matche,['key'=> $matche['key']]);
+            //dd($matche);
+            $a =[
+              'key'    =>$matche['key'],
+              'name'    =>$matche['name'],
+              'tournament_key'    =>$matche['tournament']['key'],
+              'sub_title'    =>$matche['sub_title'],
+              'venue'    =>$matche['venue']['name'],
+              'team_a'    =>$matche['team_a'],
+              'team_b'    =>$matche['team_b'],
+              'format'    =>$matche['format'],
+              'status'    =>$matche['status'],
+              'start_at'    =>$matche['start_at'],
+              'start_at_local'    =>$matche['start_at_local'],
+              'message'    =>$matche['message'] ?? NULL,
+            ];
+            Matches::updateOrInsert($a,['key'=> $matche['key']]);
         }
 
         return Matches::all()->toArray();

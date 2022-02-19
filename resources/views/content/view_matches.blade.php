@@ -13,29 +13,18 @@
                             <table class="table" id="tableUser">
                                 <thead class="font-weight-bold text-center">
                                 <tr>
-                                    {{-- <th>No.</th> --}}
                                     <th>Name</th>
                                     <th>Sub Title</th>
                                     <th>Venue</th>
                                     <th>Format</th>
+                                    <th>Team A</th>
+                                    <th>Team B</th>
                                     <th>Status</th>
                                     <th>Start At</th>
                                     <th style="width:90px;">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody class="text-center">
-                                {{-- @foreach ($users as $r_users)
-                                    <tr>
-                                <td>{{$r_users->id}}</td>
-                                <td>{{$r_users->name}}</td>
-                                <td>{{$r_users->email}}</td>
-                                <td>{{$r_users->level}}</td>
-                                <td>
-                                    <div class="btn btn-success editUser" data-id="{{$r_users->id}}">Edit</div>
-                                    <div class="btn btn-danger deleteUser" data-id="{{$r_users->id}}">Delete</div>
-                                </td>
-                                </tr>
-                                @endforeach --}}
                                 </tbody>
                             </table>
                         </div>
@@ -69,9 +58,9 @@
                             <label>Position</label><br>
                             <select name="position" class="form-control" id="position">
                                 <option value="0">0</option>
-                                @foreach($tournament as  $key => $row)
+                             {{--   @foreach($tournament as  $key => $row)
                                     <option value="{{$key+1}}">{{$key+1}}</option>
-                                @endforeach
+                                @endforeach--}}
                             </select><br>
                             <input type="hidden" name="id" id="id" value="">
                         </div>
@@ -131,6 +120,18 @@
                         },{
                             data: 'format',
                             name: 'format'
+                        },
+                        {
+                            data: 'team_a',
+                            name: 'team_a'
+                        },
+                        {
+                            data: 'team_b',
+                            name: 'team_b'
+                        },
+                        {
+                            data: 'status',
+                            name: 'status'
                         },
                         {
                             data: 'start_at',
