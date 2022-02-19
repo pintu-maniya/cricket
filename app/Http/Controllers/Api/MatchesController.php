@@ -225,7 +225,7 @@ class MatchesController extends Controller
                 ];
             }
         }
-        return response()->success($allMatches, "Completed matches get succssfully");
+        return response()->success($result, "Completed matches get succssfully");
     }
 
     public function prepareCompletedMatchesData($token){
@@ -263,5 +263,42 @@ class MatchesController extends Controller
             $result = sendRequest($token, 'tournament/' . $request->match_key . '/stats/');
         }
         return $result;
+    }
+
+    public function getOverview(){
+        $tokenObj = new TokenGenerateController();
+        $token = $tokenObj->checkToken();
+
+        $result = [];
+        $result['schedule'] = $this->prepareSheduleMatchesData($token);
+        return response()->success($result, "Overview get succssfully");
+    }
+
+    //*********************************************************
+    // Return Yesterday & todays's completed & Tomorrow Matches
+    //*********************************************************
+    public function prepareSheduleMatchesData($token){
+        $turnamentObj = new TournamentController();
+        $allTournaments = $turnamentObj->getTournamentResponse($token);
+        $todayDate = date('Y-m-d');
+        $yesterday = Carbon::yesterday()->format('Y-m-d');
+        $tomorrow = Carbon::tomorrow()->format('Y-m-d');
+        $currentTournament = collect($allTournaments)->filter(function ($row) use ($todayDate, $tomorrow){
+            if(Carbon::parse($row['start_date'])->format('Y-m-d') <= $todayDate && Carbon::parse($row['last_scheduled_match_date'])->format('Y-m-d') > $tomorrow){
+                return $row;
+            }
+        });
+        $allMatches = [];
+        foreach ($currentTournament as $tournament) {
+            $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
+            $allMatches[] = collect($apiResult['matches'])->filter(function ($row) use ($todayDate, $yesterday, $tomorrow){
+                $start_at = Carbon::parse($row['start_at'])->format('Y-m-d');
+                if($start_at >= $yesterday && $start_at <= $tomorrow && $row['status'] != 'started'){
+                    return $row;
+                }
+            });
+        }
+
+        return $allMatches;
     }
 }

@@ -30,7 +30,7 @@ class ScoreController extends Controller
             $result['run'] = $apiResult['teams'][$key]['code'].' '.$apiResult['play']['innings'][$key.'_1']['score_str'];
             $result['toss_status'] = $apiResult['teams'][$apiResult['toss']['winner']]['code'] . ' Won toss & '.$apiResult['toss']['elected'];
             $result['player_count'] = count($apiResult['squad'][$key]['playing_xi']);
-
+            $result['teams'] = $apiResult['teams'];
             $result['batting'] =  $this->getBattingData($apiResult, $key);
             $result['bawling'] =  $this->getBowlingData($apiResult, $key);
 
