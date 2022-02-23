@@ -19,12 +19,34 @@ class MatchesController extends Controller
         return response()->success($result, "Matches get succssfully");
     }
 
+    //*************************************************
+    //    prepareMatchesData() use get live matches data
+    //*************************************************
     public function prepareMatchesData($token)
     {
         $apiResult = sendRequest($token, $this->url);
         $result = [];
+        $result = $this->formateMatchesData($apiResult['matches']);
+        return $result;
+    }
+
+    //************************************************************
+    //**** Get All Metches by tournament Id
+    //************************************************************
+    public function prepareAllMatchesByTournamentId($token, $tournamentId)
+    {
+        $result = [];
+        $apiResult = sendRequest($token, 'tournament/'.$tournamentId.'/featured-matches/');
+        $result = $this->formateMatchesData($apiResult['matches']);
+        return $result;
+    }
+
+    //************************************************************
+    //**** Formate Metches Data
+    //************************************************************
+    public function formateMatchesData($matchArr) {
         try{
-            foreach ($apiResult['matches'] as $row) {
+            foreach ($matchArr as $row) {
                 $team_a_score = $team_b_score = '';
                 if (is_null($row['toss'])) {
                     $team_a = $row['teams']['a']['name'];
@@ -74,6 +96,7 @@ class MatchesController extends Controller
         }
         return $result;
     }
+
 
     public function getTodayMatches(){
         $tokenObj = new TokenGenerateController();
@@ -289,7 +312,7 @@ class MatchesController extends Controller
             }
         });
         $allMatches = [];
-        foreach ($currentTournament as $tournament) {
+        /*foreach ($currentTournament as $tournament) {
             $apiResult = sendRequest($token, 'tournament/'.$tournament["key"].'/featured-matches/');
             $allMatches[] = collect($apiResult['matches'])->filter(function ($row) use ($todayDate, $yesterday, $tomorrow){
                 $start_at = Carbon::parse($row['start_at'])->format('Y-m-d');
@@ -297,7 +320,7 @@ class MatchesController extends Controller
                     return $row;
                 }
             });
-        }
+        }*/
 
         return $allMatches;
     }

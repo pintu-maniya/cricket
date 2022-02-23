@@ -54,7 +54,7 @@ Route::get('teams', [\App\Http\Controllers\Api\TeamController::class,'getTeams']
 Route::get('associations-list', [\App\Http\Controllers\Api\AssociationController::class,'getAssociationList']);
 Route::get('country-list', [\App\Http\Controllers\Api\CountryController::class,'getCountryList']); // added by pintu, get country form api
 Route::get('country', [\App\Http\Controllers\Api\CountryController::class,'country']);// added by pintu, get country from db
-Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']); //
+//Route::get('matches', [\App\Http\Controllers\Api\MatchesController::class,'getMatches']); //
 
 
 
